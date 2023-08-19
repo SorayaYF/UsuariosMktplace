@@ -1,18 +1,14 @@
 package br.com.senai.usuarios_mktplace;
 
-import br.com.senai.usuarios_mktplace.core.dao.DaoUsuario;
-import br.com.senai.usuarios_mktplace.core.dao.FactoryDao;
-import br.com.senai.usuarios_mktplace.core.domain.Usuario;
+import br.com.senai.usuarios_mktplace.core.service.UsuarioService;
 
 public class InitApp {
 
 	public static void main(String[] args) {
-		DaoUsuario dao = FactoryDao.getInstance().getDaoUsuario();
-		Usuario usuario = dao.buscarPor("asd");
-		if (usuario == null) {
-			System.out.println("Não existe usuário");
-		} else {
-			System.out.println(usuario.getNomeCompleto());
-		}
+		UsuarioService service = new UsuarioService();
+		System.out.println(new UsuarioService().removerAcentoDo("José da Silva"));
+		System.out.println(service.fracionar("José da Silva Alburquerque dos Anjos e Bragança"));
+		System.out.println(service.gerarLoginPor("José da Silva Alburquerque dos Anjos e Bragança"));
+		System.out.println(service.gerarHashDa("jose123456"));
 	}
 }
