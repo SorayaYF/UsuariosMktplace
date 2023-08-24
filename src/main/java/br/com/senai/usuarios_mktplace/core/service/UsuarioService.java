@@ -22,7 +22,7 @@ public class UsuarioService {
 	public UsuarioService() {
 		this.dao = FactoryDao.getInstance().getDaoUsuario();
 	}
-	
+
 	public Usuario criarPor(String nomeCompleto, String senha) {
 		this.validar(nomeCompleto, senha);
 		String login = gerarLoginPor(nomeCompleto);
@@ -30,7 +30,7 @@ public class UsuarioService {
 		Usuario novoUsuario = new Usuario(login, senhaCriptografada, nomeCompleto);
 		this.dao.inserir(novoUsuario);
 		Usuario usuarioSalvo = dao.buscarPor(login);
-		return usuarioSalvo;		
+		return usuarioSalvo;
 	}
 
 	private String removerAcentoDo(String nomeCompleto) {
@@ -79,15 +79,14 @@ public class UsuarioService {
 		return new DigestUtils(MessageDigestAlgorithms.SHA3_256).digestAsHex(senha);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void validar(String senha) {
 		boolean isSenhaInvalida = Strings.isNullOrEmpty(senha) || senha.length() < 6 || senha.length() > 15;
 		Preconditions.checkArgument(!isSenhaInvalida, "A senha é obrigatória e deve conter entre 6 e 15 caracteres");
 		boolean isContemLetra = CharMatcher.inRange('a', 'z').countIn(senha.toLowerCase()) > 0;
 		boolean isContemNumero = CharMatcher.inRange('0', '9').countIn(senha) > 0;
-		boolean isCaracterInvalido = !CharMatcher.javaLetterOrDigit().matchesAllOf(senha);
+		boolean isCaracterInvalido = !CharMatcher.inRange('a', 'z').or(CharMatcher.inRange('0', '9')).matchesAllOf(senha.toLowerCase());
 
-		Preconditions.checkArgument(isContemNumero || isContemLetra || !isCaracterInvalido,
+		Preconditions.checkArgument(isContemNumero && isContemLetra && !isCaracterInvalido,
 				"A senha deve conter letras e números");
 	}
 

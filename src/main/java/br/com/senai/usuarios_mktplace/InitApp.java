@@ -6,6 +6,6 @@ public class InitApp {
 	
 	public static void main(String[] args) {
 		UsuarioService service = new UsuarioService();
-		service.criarPor("Jumenta Linda", "1212abcd");
+		service.criarPor("Jumenta Linda", "1212 Abcd");
 	}
 }
