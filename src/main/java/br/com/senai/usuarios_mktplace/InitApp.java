@@ -7,6 +7,5 @@ public class InitApp {
 	public static void main(String[] args) {
 
 		UsuarioService service = new UsuarioService();
-
 	}
 }
