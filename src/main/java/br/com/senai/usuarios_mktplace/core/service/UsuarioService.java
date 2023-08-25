@@ -32,7 +32,7 @@ public class UsuarioService {
 		Usuario usuarioSalvo = dao.buscarPor(login);
 		return usuarioSalvo;
 	}
-	
+
 	public Usuario atualizarPor(String login, String nomeCompleto, String senhaAntiga, String senhaNova) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(login), "O login é obrigatório para atualização");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(senhaAntiga),
@@ -51,6 +51,12 @@ public class UsuarioService {
 		return usuarioAlterado;
 	}
 
+	public Usuario buscarPor(String login) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(login), "O login é obrigatório");
+		Usuario usuarioEncontrado = dao.buscarPor(login);
+		Preconditions.checkNotNull(usuarioEncontrado, "Não foi encontrado usuário vinculado ao login informado");
+		return usuarioEncontrado;
+	}
 
 	private String removerAcentoDo(String nomeCompleto) {
 		return Normalizer.normalize(nomeCompleto, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
@@ -65,7 +71,6 @@ public class UsuarioService {
 				if (!parte.matches("(?i)^(de|e|dos|da|das)$")) {
 					nomeFracionado.add(parte.toLowerCase());
 				}
-
 			}
 		}
 		return nomeFracionado;
@@ -79,7 +84,7 @@ public class UsuarioService {
 		if (!partesDoNome.isEmpty()) {
 			for (int i = 1; i < partesDoNome.size(); i++) {
 				loginGerado = partesDoNome.get(0) + "." + partesDoNome.get(i);
-				if(loginGerado.length() > 40) {
+				if (loginGerado.length() > 40) {
 					loginGerado = loginGerado.substring(0, 40);
 				}
 				usuarioEncontrado = dao.buscarPor(loginGerado);
@@ -90,7 +95,7 @@ public class UsuarioService {
 			int proximoSequencial = 0;
 			String loginDisponivel = null;
 			while (usuarioEncontrado != null) {
-				
+
 				loginDisponivel = loginGerado + ++proximoSequencial;
 				usuarioEncontrado = dao.buscarPor(loginDisponivel);
 			}
@@ -108,7 +113,8 @@ public class UsuarioService {
 		Preconditions.checkArgument(!isSenhaInvalida, "A senha é obrigatória e deve conter entre 6 e 15 caracteres");
 		boolean isContemLetra = CharMatcher.inRange('a', 'z').countIn(senha.toLowerCase()) > 0;
 		boolean isContemNumero = CharMatcher.inRange('0', '9').countIn(senha) > 0;
-		boolean isCaracterInvalido = !CharMatcher.inRange('a', 'z').or(CharMatcher.inRange('0', '9')).matchesAllOf(senha.toLowerCase());
+		boolean isCaracterInvalido = !CharMatcher.inRange('a', 'z').or(CharMatcher.inRange('0', '9'))
+				.matchesAllOf(senha.toLowerCase());
 
 		Preconditions.checkArgument(isContemNumero && isContemLetra && !isCaracterInvalido,
 				"A senha deve conter letras e números");
@@ -122,6 +128,5 @@ public class UsuarioService {
 		Preconditions.checkArgument(isNomeValido,
 				"O nome é obrigatório e deve conter " + "entre 5 e 120 caracteres e conter sobrenome também");
 		this.validar(senha);
-
 	}
 }
