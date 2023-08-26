@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.MessageDigestAlgorithms;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
@@ -14,13 +16,19 @@ import com.google.common.base.Strings;
 import br.com.senai.usuarios_mktplace.core.dao.DaoUsuario;
 import br.com.senai.usuarios_mktplace.core.dao.FactoryDao;
 import br.com.senai.usuarios_mktplace.core.domain.Usuario;
+import jakarta.annotation.PostConstruct;
 
+@Service
 public class UsuarioService {
 
+	@Autowired
+	private FactoryDao factoryDao;
+	
 	private DaoUsuario dao;
 
-	public UsuarioService() {
-		this.dao = FactoryDao.getInstance().getDaoUsuario();
+	@PostConstruct
+	public void inicializar() {
+		this.dao = factoryDao.getDaoUsuario();
 	}
 
 	public Usuario criarPor(String nomeCompleto, String senha) {
@@ -57,7 +65,7 @@ public class UsuarioService {
 		Preconditions.checkNotNull(usuarioEncontrado, "Não foi encontrado usuário vinculado ao login informado");
 		return usuarioEncontrado;
 	}
-
+	
 	private String removerAcentoDo(String nomeCompleto) {
 		return Normalizer.normalize(nomeCompleto, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
 	}

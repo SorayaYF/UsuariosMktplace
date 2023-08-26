@@ -1,11 +1,28 @@
 package br.com.senai.usuarios_mktplace;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+
 import br.com.senai.usuarios_mktplace.core.service.UsuarioService;
 
+@SpringBootApplication
 public class InitApp {
 
-	public static void main(String[] args) {
+	@Autowired
+	private UsuarioService service;
 
-		UsuarioService service = new UsuarioService();
+	public static void main(String[] args) {
+		SpringApplication.run(InitApp.class, args);
+	}
+
+	@Bean
+	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+		return args -> {
+			System.out.println(service.buscarPor("alan.duarte").getNomeCompleto());
+		};
 	}
 }
